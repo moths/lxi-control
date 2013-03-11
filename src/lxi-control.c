@@ -245,8 +245,7 @@ static int connect_instrument(void)
 						sizeof(struct sockaddr_in));
 	if(retval == ERR)
 	{
-///		ERROR("Error establishing TCP connection\n"); // FIXME
-		return 1;
+		ERROR("Error establishing TCP connection: %s\n",strerror(errno)); // FIXME
 	}
 	return retval;
 }
@@ -411,7 +410,8 @@ int main (int argc, char *argv[])
 	{
 	
 		/* Connect instrument */
-		connect_instrument();
+		if (connect_instrument())
+			exit(1);
 	
 		/* Send command */
 		send_command();
