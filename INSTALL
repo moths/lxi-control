@@ -1,0 +1,13 @@
+Installation
+~~~~~~~~~~~~
+
+Normally you can just do "./configure" followed by "make" and "make install", 
+and that will install the lxi-control program in your own ~/bin/ directory. If
+you want to do a global install, you can do
+
+	$ ./configure prefix=/usr
+	$ make
+	$ make install
+
+(or prefix=/usr/local, of course).  Just like any program suite
+that uses $prefix.

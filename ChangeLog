@@ -1,0 +1,6 @@
+commit ed33473926e990c2a6d210c7586ddd408cecb336
+Author: Martin Lund <mgl@doredevelopment.dk>
+Date:   Wed Mar 11 11:47:36 2009 +0100
+
+    Fixed broken string handling in receive_response
+
