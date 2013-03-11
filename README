@@ -14,7 +14,7 @@ For more information on SCPI please see http://www.scpiconsortium.org
 
 Where to get
 ~~~~~~~~~~~~
-For new releases please see http://dev.doredevelopment.dk/wiki/Lxi-control
+For new releases please see https://github.com/moths/lxi-control
 
 Installation
 ~~~~~~~~~~~~
@@ -24,6 +24,7 @@ Please read the INSTALL file for installation instructions.
 Authors
 ~~~~~~~
 Martin Lund <mgl@doredevelopment.dk>
+Morten Thunberg Svendsen <morten.thunbergsvendsen@prevas.dk>
 
 Comments and bug reports are welcomed. Please send them via email.
 
@@ -31,6 +32,7 @@ Comments and bug reports are welcomed. Please send them via email.
 License
 ~~~~~~~
 Copyright 2009 DoréDevelopment 
+Copyright 2013 Prevas A/S
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
