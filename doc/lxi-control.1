@@ -39,7 +39,19 @@ Display program version.
 .TP
 .B \--help
 Display help.
-
+.SS "Exit status:"
+.TP
+0
+if OK,
+.TP
+1
+if minor problems (e.g., wrong options),
+.TP
+2
+if connection problems (e.g., Timeout or connection failed),
+.TP
+3
+if serious trouble (e.g., system calls that normaly do not fail failed).
 .SH "AUTHOR" 
 .PP
 .B lxi-control

@@ -100,7 +100,7 @@ static int parse_options(int argc, char *argv[])
 	if (argc == 1)
 	{
 		print_help();
-		exit(0);
+		exit(1);
 	}
 
 	while (1)
@@ -199,7 +199,7 @@ static int disconnect_instrument(void)
 	if(close(config.socket)==ERR)
 	{
 		ERROR("Error closing socket\n");
-		exit(1);
+		exit(3);
 	}
 	
 	return 0;
@@ -217,8 +217,8 @@ static int connect_instrument(void)
 	
 	if(config.socket == ERR)
 	{
-		ERROR("Error connecting socket\n");
-		exit(1);
+		ERROR("Error connecting socket: %s\n",strerror(errno));
+		exit(3);
 	}
 
 	/* Set socket options - TCP */
@@ -231,7 +231,7 @@ static int connect_instrument(void)
 	if ((setsockopt(config.socket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv))) == ERR)
 	{
 		perror("setsockopt - SO_RCVTIMEO");
-		exit(1);
+		exit(3);
 	}
 
 	/* Receivers address */
@@ -262,7 +262,7 @@ static int send_command(void)
 	if (retval == ERR)
 	{
 		ERROR("Error sending SCPI command\n");
-		exit(1);
+		exit(3);
 	}
 
 	return retval;
@@ -294,7 +294,7 @@ static int receive_response(void)
 	ret=pselect(config.socket+1, &rset, NULL, NULL, &t, NULL);
 	if(ret == -1) {
 		ERROR("Error reading response: %s\n",strerror(errno));
-		exit(1);
+		exit(3);
 	}
 
 	if(!ret) {
@@ -306,7 +306,7 @@ static int receive_response(void)
 	if((length=recv(config.socket,&buffer[0],200,0))==ERR)
 	{
 		ERROR("Error reading response: %s\n",strerror(errno));
-		exit(1);
+		exit(3);
 	}
 	
 	/* Add zero character (C string) */
@@ -340,7 +340,7 @@ static int discover_instruments(void)
 	if (sockfd == -1)
 	{
 		perror("Socket creation error");
-		exit(1);
+		exit(3);
 	}
 
 	/* Set socket options - broadcast */
@@ -348,7 +348,7 @@ static int discover_instruments(void)
 					&broadcast,sizeof (broadcast))) == ERR)
 	{
 		perror("setsockopt - SO_SOCKET");
-		exit(1);
+		exit(3);
 	}
 	
 	/* Set socket options - timeout */
@@ -357,7 +357,7 @@ static int discover_instruments(void)
 	if ((setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv))) == ERR)
 	{
 		perror("setsockopt - SO_RCVTIMEO");
-		exit(1);
+		exit(3);
 	}
 
 	/* Senders address */
@@ -430,7 +430,7 @@ int main (int argc, char *argv[])
 	
 		/* Connect instrument */
 		if (connect_instrument())
-			exit(1);
+			exit(2);
 	
 		/* Send command */
 		send_command();
