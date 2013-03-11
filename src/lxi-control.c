@@ -273,6 +273,9 @@ static int receive_response(void)
 	char buffer[500];
 	int length;
 	int i, question = 0;
+	fd_set rset;
+	int ret;
+	struct timespec t;
 	
 	/* Skip receive if no '?' in command */
 	for (i=0; i<strlen(config.command);i++)
@@ -282,11 +285,27 @@ static int receive_response(void)
 	}
 	if (question == 0)
 		return 0;
-	
+
+	/* The device do not return any data if command send is wrong. If no
+	 * data recived until the specified timeout, exit. */	
+	FD_ZERO(&rset);
+	FD_SET(config.socket, &rset);
+	t.tv_sec=config.timeout; t.tv_nsec=0;
+	ret=pselect(config.socket+1, &rset, NULL, NULL, &t, NULL);
+	if(ret == -1) {
+		ERROR("Error reading response: %s\n",strerror(errno));
+		exit(1);
+	}
+
+	if(!ret) {
+		INFO("Timeout waiting for response\n");
+		exit(2);
+	}
+
 	/* Read response */
 	if((length=recv(config.socket,&buffer[0],200,0))==ERR)
 	{
-		ERROR("Error reading response\n");
+		ERROR("Error reading response: %s\n",strerror(errno));
 		exit(1);
 	}
 	
