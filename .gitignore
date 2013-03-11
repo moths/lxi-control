@@ -1,0 +1,7 @@
+Makefile
+config.log
+config.status
+*.Po
+Makefile
+src/lxi-control
+*.o
