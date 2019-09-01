@@ -20,6 +20,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -191,6 +192,8 @@ static int parse_options(int argc, char *argv[])
 		ERROR("\n");
 		exit(1);
 	}
+
+	return 0;
 }
 
 static int disconnect_instrument(void)
@@ -250,13 +253,17 @@ static int connect_instrument(void)
 	return retval;
 }
 
-static int send_command(void)
+static ssize_t send_command(void)
 {
-	int retval = 0;
-	
+	ssize_t retval;
+
 	/* Add string termination to command */
-	config.command[strlen(config.command)] = 0;
-	
+	if (config.command == NULL)
+	{
+		ERROR("Error. Can not send empty SCPI command\n");
+		exit(3);
+	}
+
 	/* Send SCPI command */
 	retval = send(config.socket,config.command,strlen(config.command)+1,0);
 	if (retval == ERR)
@@ -271,8 +278,8 @@ static int send_command(void)
 static int receive_response(void)
 {
 	char buffer[500];
-	int length;
-	int i, question = 0;
+	int length, question = 0;
+	size_t i;
 	fd_set rset;
 	int ret;
 	struct timespec t;
@@ -325,7 +332,7 @@ static int discover_instruments(void)
 	struct sockaddr_in recv_addr;
 	int broadcast = 1;
 	int count;
-	int addrlen;
+	socklen_t addrlen;
 	char buf[NET_MAX_BUF];
 	struct timeval tv;
 	struct in_addr ip_list[NET_MAX_NODES];
